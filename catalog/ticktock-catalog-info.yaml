@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ticktock
+  description: TickTock Stream Apps
+  tags:
+    - spring
+    - streaming
+    - tanzu
+  annotations:
+    'backstage.io/kubernetes-label-selector': 'spring-group-id=ticktock'
+spec:
+  type: service
+  lifecycle: experimental
+  owner: default-team
