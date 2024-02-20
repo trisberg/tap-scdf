@@ -1,0 +1,36 @@
+apiVersion: carto.run/v1alpha1
+kind: ClusterSourceTemplate
+metadata:
+  name: scdf-stream-pipeline
+spec:
+  healthRule:
+    singleConditionType: Ready
+  lifecycle: mutable
+  params:
+  - default:
+      apps.tanzu.vmware.com/pipeline: scdf-stream
+    name: scdf_pipeline_matching_labels
+  revisionPath: .status.outputs.revision
+  urlPath: .status.outputs.url
+  ytt: "#@ load(\"@ytt:data\", \"data\")\n\n#@ def merge_labels(fixed_values):\n#@
+    \  labels = {}\n#@   if hasattr(data.values.workload.metadata, \"labels\"):\n#@
+    \    exclusions = [\"kapp.k14s.io/app\", \"kapp.k14s.io/association\"]\n#@     for
+    k,v in dict(data.values.workload.metadata.labels).items():\n#@       if k not
+    in exclusions:\n#@         labels[k] = v\n#@       end\n#@     end\n#@   end\n#@
+    \  labels.update(fixed_values)\n#@   return labels\n#@ end\n\n#@ def merged_tekton_params():\n#@
+    \  params = []\n#@   if hasattr(data.values, \"params\") and hasattr(data.values.params,
+    \"scdf_pipeline_params\"):\n#@     for param in data.values.params[\"scdf_pipeline_params\"]:\n#@
+    \      params.append({ \"name\": param, \"value\": data.values.params[\"scdf_pipeline_params\"][param]
+    })\n#@     end\n#@   end\n#@   params.append({ \"name\": \"source-url\", \"value\":
+    data.values.source.url })\n#@   params.append({ \"name\": \"source-revision\",
+    \"value\": data.values.source.revision })\n#@   return params\n#@ end\n---\napiVersion:
+    carto.run/v1alpha1\nkind: Runnable\nmetadata:\n  name: #@ data.values.workload.metadata.name\n
+    \ labels: #@ merge_labels({ \"app.kubernetes.io/component\": \"test\" })\nspec:\n
+    \ #@ if/end hasattr(data.values.workload.spec, \"serviceAccountName\"):\n  serviceAccountName:
+    #@ data.values.workload.spec.serviceAccountName\n\n  runTemplateRef:\n    name:
+    tekton-source-pipelinerun\n    kind: ClusterRunTemplate\n\n  selector:\n    resource:\n
+    \     apiVersion: tekton.dev/v1beta1\n      kind: Pipeline\n\n    #@ not hasattr(data.values,
+    \"scdf_pipeline_matching_labels\") or fail(\"scdf_pipeline_matching_labels
+    param is required\")\n    matchingLabels: #@ data.values.params[\"scdf_pipeline_matching_labels\"]
+    or fail(\"scdf_pipeline_matching_labels param cannot be empty\")\n\n  inputs:
+    \n    tekton-params: #@ merged_tekton_params()\n"

@@ -1,0 +1,37 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: scdf-stream
+  labels:
+    apps.tanzu.vmware.com/pipeline: scdf-stream
+spec:
+  params:
+    - name: source-url
+    - name: source-revision
+  tasks:
+    - name: deploy
+      params:
+        - name: source-url
+          value: $(params.source-url)
+        - name: source-revision
+          value: $(params.source-revision)
+      taskSpec:
+        params:
+          - name: source-url
+          - name: source-revision
+        steps:
+          - name: deploy
+            image: springdeveloper/scdf-shell:latest
+            script: |-
+              cd `mktemp -d`
+              wget -qO- $(params.source-url) | tar xz -m
+              cat stream.yaml
+              n=$(grep -e name: stream.yaml)
+              name=${n##name: }
+              d=$(grep -e definition: stream.yaml)
+              definition=${d##definition: }
+              echo "stream create --name $name --definition \"$definition\" --deploy true" > stream.cmd
+              cat stream.cmd
+              SCDF_URL=http://34.172.20.216
+              /shell.sh --dataflow.uri=$SCDF_URL --spring.shell.commandFile=stream.cmd
+              exit 0
