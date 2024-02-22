@@ -25,6 +25,6 @@ spec:
             script: |-
               cd `mktemp -d`
               wget -qO- $(params.source-url) | tar xz -m
-              export SCDF_URL=http://34.172.20.216
+              export SCDF_URL=http://172.16.0.1
               /apply.sh $PWD/stream.yaml
               exit 0
