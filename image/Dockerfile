@@ -4,3 +4,5 @@ RUN mkdir /app
 COPY spring-cloud-dataflow-shell-*.jar /app/spring-cloud-dataflow-shell.jar
 COPY shell.sh shell.sh
 RUN chmod +x shell.sh
+COPY apply.sh apply.sh
+RUN chmod +x apply.sh
