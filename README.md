@@ -4,7 +4,7 @@
  
  You can however add a few TAP resources that will provide some integration, allowing you to deploy streams using a custom TAP Workload and then view the applications making up the SCDF stream in TAP's Developer Portal.
 
-> NOTE: The approach in this document have been tested with the most recent SCDF version 2.11.2 and TAP version 1.8.0 using a `full` profile.
+> NOTE: The approach in this document have been tested with the most recent SCDF version 2.11.2 and TAP version 1.7.2 using a `full` profile.
 
 ## Install TAP using the full profile
 
@@ -210,7 +210,7 @@ spec:
               exit 0
 ```
 
-> NOTE: We provide the URL for the SCDF server for this pipline to use.
+> NOTE: We provide the URL for the SCDF server for this pipeline to use.
 
 ## Create an OCI image that can be used by the Tekton pipeline
 
