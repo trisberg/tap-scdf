@@ -1,10 +1,9 @@
 # Tanzu Application Platform and Spring Cloud Data Flow integration
 
- Tanzu Application Platform (TAP) and Spring Cloud Data Flow (SCDF) were developed independently so there is no explicit integration when you install both products.
- 
- You can however add a few TAP resources that will provide some integration, allowing you to deploy streams using a custom TAP Workload and then view the applications making up the SCDF stream in TAP's Developer Portal.
+This document outlines a way to integrate Spring Cloud Data Flow (SCDF) with 
+Tanzu Application Platform (TAP). We cover how to add a few TAP resources that will provide integration, allowing you to deploy streams using a custom TAP Workload and then view the applications making up the SCDF stream in TAP's Developer Portal.
 
-> NOTE: The approach in this document have been tested with the most recent SCDF version 2.11.2 and TAP version 1.7.2 using a `full` profile.
+> NOTE: The approach in this document have been tested with the most recent SCDF version 2.11.2 and TAP versions 1.7 and 1.8 using a `full` profile.
 
 ## Install TAP using the full profile
 
@@ -20,6 +19,8 @@ helm install scdf oci://registry-1.docker.io/bitnamicharts/spring-cloud-dataflow
   --set server.service.type=LoadBalancer \
   --set server.service.ports.http=80
 ```
+
+> NOTE: There is also a [Carvel package](https://dataflow.spring.io/docs/installation/kubernetes/carvel/) that can be used to install SCDF on your TAP cluster.
 
 Once the `LoadBalancer` EXTERNAL-IP address has been assigned we need to capture it so we can access the SCDF API and UI.
 
