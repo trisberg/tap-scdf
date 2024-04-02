@@ -117,9 +117,6 @@ spec:
     templateRef:
       kind: ClusterSourceTemplate
       name: source-template
-    sources:
-    - name: source
-      resource: source-deployer
   - name: source-deployer
     sources:
     - name: source
